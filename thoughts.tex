@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage{graphicx}
 \usepackage{titlesec}
 \usepackage{mismath}
@@ -7,6 +7,17 @@
 \usepackage[letterpaper, total={6.5in, 9in}]{geometry}
 \usepackage{amsmath}
 \usepackage{tikzsymbols}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\urlstyle{same}
 \title{%
 Rocket Ramblings \\
 \large Pazuki Development Notes}
@@ -29,7 +40,7 @@ Rocket Ramblings \\
 \maketitle
 
 \pagebreak
-
+\chapter{Rocket Math}
 \section{Introduction}
 This is a collection of my ramblings on how to make a rocket controlled, and hopefully land. Its going to start with the base knowledge that you need that wont be covered in a course like 9A, and an understanding of how to do basic matrix algebra ($A \times \vect{x}$, $A \times B$, $\vect{x} \cdot \vect{y}$). You also need to know how to take a derivative.
 
@@ -39,13 +50,13 @@ To take a rocket and control it, you first need to understand what makes it move
 
 \subsection{Reference Frames}
 A reference frame is what you measure everything relative to. For example, majority of physis problems are in the `Earth-Fixed' or `Inertial' reference frame. What that means is that you have a stationary observer, and all measurements are `relative' to that stationary point. But if you were in the perspective of a moving object, then your observing a `relative' velocity and position. This creates the necessity for an equation known as the `equation of coriolis' or `something rule' depending on what dynamics professor you have. You need to use this to convert from one reference frame to another, as you have to consider the rate of angular movement around each other.  
-\begin{equation} \label{eq:1}
+\begin{equation} \label{eq:1} 
     \diff{i} \vect{p} =  \diff{p}\vect{p} + \omega_{p/i} \times \vect{p}
 \end{equation}
 
 I wont go into the derivation, but its written above in equation{~}\ref{eq:1}. You can use it  to convert the derivative of some position or velocity vector from one reference frame $p$ to another reference frame $i$.
 \subsection{Rotation}
-How you look at rotation is very important, especially when you need to maintain some form of consistency. You can represent rotation in a variety of ways, but the two that we will be considering are Euler angles, and Quaternions. Before diving into that however, your end goal needs to be to describe a rotation and rotational rate between two reference frames. The reason you cant describe rotation with just one reference frame is because of what a rotation is. If your spinning your phone, you define a `Forward', `Up', and `Side' direction to reference a rotation around. In the same way, you must mathematically define a rotation as a transformation between two reference frames. Even though a reference frame is technically `fixed' to a point (like the earth{~}fixed frame), you can `move' (in a sense) the frames to have their origins lie on top of each other to understand the rotations required to take you from one to the next. (This is the underlying principle behind Euler angles). Quaternions define rotation as a 4 dimensional vector. In essence, it defines a vector that you are rotating around, and the magnitude of that vector is how much the rotation is.
+How you look at rotation is very important, especially when you need to maintain some form of consistency. You can represent rotation in a variety of ways, but the two that we will be considering are Euler angles, and Quaternions. Before diving into that however, your end goal needs to be to describe a rotation and rotational rate between two reference frames. The reason you cant describe rotation with just one reference frame is because of what a rotation is. If your spinning your phone, you define a `Forward', `Up', and `Side' direction to reference a rotation around. In the same way, you must mathematically define a rotation as a transformation between two reference frames. Even though a reference frame is technically `fixed' to a point (like the earth{~}fixed frame), you can `move' (in a sense) the frames to have their origins lie on top of each other to understand the rotations required to take you from one to the next. (This is the underlying principle behind Euler angles). Quaternions define rotation as a 4 dimensional vector. For further info, look \href{https://en.wikipedia.org/wiki/Quaternion}{here}.
 \subsubsection{Euler Angle Rotations}
 So, onto some math for rotation. Euler angle rotations can be divided up into 3 different matrices / principle rotations. 
 
@@ -162,6 +173,32 @@ Moments of inertia are written as $J_x$, $J_y$, $J_z$, along those axes (shorten
 \end{equation}
 
 And thats a wrap for our dynamics \dSmiley.
+
+\chapter{Control}
+Heres the fun part, which is trying to control your system. There are so many ways to do it, but lets start with some more important definitions. The thing that you want to control is called your `system' or `plant'. Whatever variables that you can apply to modify your system are your `control inputs'. And the different quantities of your system that you can measure and want to control are called your `states'.
+
+\section{Control Algorithms}
+Now that we have that out of the way, lets define a little toy system to learn about everything here. Lets start with our equations of motion.
+
+We can define our states as our vertical position $y$ and our vertical velocity $v$. Our control input is a force in the y{-}axis, $F$. The object has a mass $m = 1kg$, and an acceleration from gravity $g = 9.81 m/s^2$ on it. 
+
+\begin{equation}
+    \vect{x} = \cvec{y \\ v},
+    \vect{\dot x} = \cvec {\dot y \\ \dot v},
+    \vect{u} = \cvec{F}
+\end{equation}
+
+\begin{equation} \label{simple_eom}
+    \begin{split}
+        y & = vt \\
+        v & = \left( \frac{F}{m} \right) t - g * t    
+    \end{split}
+\end{equation} 
+
+That should be enough to make a basic simulation of our object using some python or MATLAB and Simulink depending on what you want to do. 
+
+\subsection{PID Control}
+Lets create a simple controller, and explore what driving a system to a state looks like and how modifying relatively simple variables changes the response time.
 
 
 \end{document}
