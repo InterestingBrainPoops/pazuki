@@ -18,7 +18,7 @@ def create_traj(func, dt, domain):
             points.append(func(t * dt + domain[0]))
         return Trajectory(points, dt)
 
-print(K)
+# print(K)
 
 dt = 0.01;
 total_sim_time = 35;
@@ -96,7 +96,7 @@ while(t <= time_steps ):
         u[0] = u[0] + 9.81 * mass0
         # u[0] = min(max(u[0], mass0 * .7 * 9.81), mass0 * 1.2 * 9.81)
     control_input = np.array([np.interp(t - freq, [t_prev, t_curr], [pu[0], u[0]])])
-    print(control_input, t, t_prev, t_curr)
+    # print(control_input, t, t_prev, t_curr)
     # control_inputs.append(np.copy(control_input))
     control_inputs.append(np.copy(state[1]))   
     # mass -= (u[0] / (150 * 9.81)) * dt
@@ -116,7 +116,7 @@ while(t <= time_steps ):
 log = np.array(log)
 control_inputs = np.array(control_inputs)
 goals = np.array(goals)
-print(goals[:, 0]) 
+# print(goals[:, 0]) 
 thingle = 0
 for i in mass_log:
     thingle += i * dt
@@ -131,7 +131,7 @@ ax[1].plot(np.arange(0, time_steps) * dt, control_inputs[:-1])
 ax[1].set(xlabel='Time(s)', ylabel='Control Effort (N)')
 ax[2].plot(np.arange(0, time_steps) * dt, mass_log[:-1])
 ax[2].set(xlabel='Time(s)', ylabel='Mass (kg)')
-print(B.shape)
+# print(B.shape)
 print("average mass: ", sum(mass_log) / len(mass_log))
 print("final_mass: ", mass_log[len(mass_log) - 1])
 print("min height: ", log[:-1,0].min());
